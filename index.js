@@ -1,5 +1,5 @@
 const express = require('express');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const cors = require('cors');
 require('dotenv').config();
 const port = process.env.PORT || 5000;
@@ -26,11 +26,24 @@ const client = new MongoClient(uri, {
 
 async function run() {
     try {
-        const allServicesColection = client.db('homeFixPro').collection('allServices');
+        const servicesColection = client.db('homeFixPro').collection('services');
 
-
-        app.get('/allServices',async (req, res)=>{
-            const result = await allServicesColection.find().toArray();
+        // get allServices
+        app.get('/services', async (req, res) => {
+            const result = await servicesColection.find().toArray();
+            res.send(result)
+        })
+        // get single sevice of id
+        app.get('/service/:id', async (req, res) => {
+            const query = { _id: new ObjectId(req.params.id) }
+            result = await servicesColection.findOne(query);
+            res.send(result)
+        })
+        // post service
+        app.post('/service',async(req, res)=>{
+            const serviceData = req.body;
+            console.log(serviceData);
+            const result = await servicesColection.insertOne(serviceData);
             res.send(result)
         })
 
@@ -45,3 +58,7 @@ run().catch(console.dir);
 app.listen(port, () => {
     console.log('this server is runnig port:', port);
 })
+
+
+
+  
