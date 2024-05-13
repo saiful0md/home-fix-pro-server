@@ -50,6 +50,13 @@ async function run() {
         const result = await servicesColection.find(query).toArray()
         res.send(result)
       })
+        // delete data by id
+      app.delete('/service/:id',async(req, res)=>{
+        const id = req.params.id
+        const query = {_id: new ObjectId(id)}
+        const result = await servicesColection.deleteOne(query)
+        res.send(result)
+      })
         // post service
         app.post('/service', async (req, res) => {
             const serviceData = req.body;
