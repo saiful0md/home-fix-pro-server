@@ -6,7 +6,9 @@ const port = process.env.PORT || 5000;
 const app = express()
 
 // middleware
-app.use(cors());
+app.use(cors({
+    origin:['http://localhost:5173']
+}));
 app.use(express.json());
 
 app.get('/', (req, res) => {
@@ -42,11 +44,12 @@ async function run() {
         })
 
         // get data from email
-        app.get('/service/:email', async (req, res) => {
-            const query = { 'serviceProvider.email': email }
-            result = await servicesColection.find(query).toArray();
-            res.send(result)
-        })
+      app.get('/services/:email',async(req, res)=>{
+        const email = req.params.email
+        const query = {'serviceProvider.email':email}
+        const result = await servicesColection.find(query).toArray()
+        res.send(result)
+      })
         // post service
         app.post('/service', async (req, res) => {
             const serviceData = req.body;
@@ -61,6 +64,12 @@ async function run() {
             const result = await bookingColection.insertOne(bookingData);
             res.send(result)
         })
+        // app.get('/booking/:email', async (req, res) => {
+        // const e
+        //     const query = { userEmail: email }
+        //     result = await bookingColection.find(query).toArray();
+        //     res.send(result)
+        // })
         app.get('/serviceToDo', async (req, res) => {
             const result = await bookingColection.find().toArray();
             res.send(result)
