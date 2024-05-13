@@ -27,6 +27,7 @@ const client = new MongoClient(uri, {
 async function run() {
     try {
         const servicesColection = client.db('homeFixPro').collection('services');
+        const bookingColection = client.db('homeFixPro').collection('booking');
 
         // get allServices
         app.get('/services', async (req, res) => {
@@ -39,11 +40,29 @@ async function run() {
             result = await servicesColection.findOne(query);
             res.send(result)
         })
+
+        // get data from email
+        app.get('/service/:email', async (req, res) => {
+            const query = { 'serviceProvider.email': email }
+            result = await servicesColection.find(query).toArray();
+            res.send(result)
+        })
         // post service
-        app.post('/service',async(req, res)=>{
+        app.post('/service', async (req, res) => {
             const serviceData = req.body;
             console.log(serviceData);
             const result = await servicesColection.insertOne(serviceData);
+            res.send(result)
+        })
+
+        // post booking data
+        app.post('/booking', async (req, res) => {
+            const bookingData = req.body;
+            const result = await bookingColection.insertOne(bookingData);
+            res.send(result)
+        })
+        app.get('/serviceToDo', async (req, res) => {
+            const result = await bookingColection.find().toArray();
             res.send(result)
         })
 
@@ -61,4 +80,4 @@ app.listen(port, () => {
 
 
 
-  
+
