@@ -78,6 +78,10 @@ async function run() {
             res.send(result)
         })
 
+
+        // booking data
+
+
         // post booking data
         app.post('/booking', async (req, res) => {
             const bookingData = req.body;
@@ -97,6 +101,17 @@ async function run() {
             const query = { 'serviceProvider.email': email }
             result = await bookingColection.find(query).toArray();
             res.send(result)
+        })
+        // patch booking by id
+        app.patch('/bookingStatus/:id', async (req, res) => {
+         const id = req.params.id
+         const status = req.body
+         const query = {_id: new ObjectId(id)}
+         const updateDoc = {
+            $set:status
+         }
+         const result = await bookingColection.updateOne(query, updateDoc)
+         res.send(result)
         })
 
         // Send a ping to confirm a successful connection
