@@ -64,10 +64,10 @@ async function run() {
             const options = { upsert: true };
             const updateDoc = {
                 $set: {
-                  ...serviceData
+                    ...serviceData
                 },
-              };
-              const result = await servicesColection.updateOne(query, updateDoc, options);
+            };
+            const result = await servicesColection.updateOne(query, updateDoc, options);
             res.send(result)
         })
         // post service
@@ -84,14 +84,18 @@ async function run() {
             const result = await bookingColection.insertOne(bookingData);
             res.send(result)
         })
-        // app.get('/booking/:email', async (req, res) => {
-        // const e
-        //     const query = { userEmail: email }
-        //     result = await bookingColection.find(query).toArray();
-        //     res.send(result)
-        // })
-        app.get('/serviceToDo', async (req, res) => {
-            const result = await bookingColection.find().toArray();
+        // get booking by user email
+        app.get('/booking/:email', async (req, res) => {
+            const email = req.params.email
+            const query = { userEmail: email }
+            result = await bookingColection.find(query).toArray();
+            res.send(result)
+        })
+        // get booking by user email
+        app.get('/serviceToDo/:email', async (req, res) => {
+            const email = req.params.email
+            const query = { 'serviceProvider.email': email }
+            result = await bookingColection.find(query).toArray();
             res.send(result)
         })
 
