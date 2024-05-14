@@ -36,6 +36,15 @@ async function run() {
             const result = await servicesColection.find().toArray();
             res.send(result)
         })
+        // get allServices
+        app.get('/servicesSearch', async (req, res) => {
+            const search = req.query.search
+            let query = {
+                serviceName: {$regex: search, $options:'i'}
+            }
+            const result = await servicesColection.find(query).toArray();
+            res.send(result)
+        })
         // get single sevice of id
         app.get('/service/:id', async (req, res) => {
             const query = { _id: new ObjectId(req.params.id) }
@@ -85,7 +94,7 @@ async function run() {
         // post booking data
         app.post('/booking', async (req, res) => {
             const bookingData = req.body;
-console.log(bookingData);
+            console.log(bookingData);
             // validate duplicate booking
             const query = {
 
@@ -94,10 +103,10 @@ console.log(bookingData);
             }
             const alreadyBooked = await bookingColection.findOne(query)
             console.log(alreadyBooked);
-            if(alreadyBooked){
+            if (alreadyBooked) {
                 return res
-                .status(400)
-                .send('You already Purchase')
+                    .status(400)
+                    .send('You already Purchase')
             }
             const result = await bookingColection.insertOne(bookingData);
             res.send(result)
@@ -118,14 +127,14 @@ console.log(bookingData);
         })
         // patch booking by id
         app.patch('/bookingStatus/:id', async (req, res) => {
-         const id = req.params.id
-         const status = req.body
-         const query = {_id: new ObjectId(id)}
-         const updateDoc = {
-            $set:status
-         }
-         const result = await bookingColection.updateOne(query, updateDoc)
-         res.send(result)
+            const id = req.params.id
+            const status = req.body
+            const query = { _id: new ObjectId(id) }
+            const updateDoc = {
+                $set: status
+            }
+            const result = await bookingColection.updateOne(query, updateDoc)
+            res.send(result)
         })
 
         // Send a ping to confirm a successful connection
