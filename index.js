@@ -85,6 +85,20 @@ async function run() {
         // post booking data
         app.post('/booking', async (req, res) => {
             const bookingData = req.body;
+console.log(bookingData);
+            // validate duplicate booking
+            const query = {
+
+                serviceId: bookingData.serviceId,
+                userEmail: bookingData.userEmail
+            }
+            const alreadyBooked = await bookingColection.findOne(query)
+            console.log(alreadyBooked);
+            if(alreadyBooked){
+                return res
+                .status(400)
+                .send('You already Purchase')
+            }
             const result = await bookingColection.insertOne(bookingData);
             res.send(result)
         })
