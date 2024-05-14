@@ -7,7 +7,7 @@ const app = express()
 
 // middleware
 app.use(cors({
-    origin:['http://localhost:5173']
+    origin: ['http://localhost:5173']
 }));
 app.use(express.json());
 
@@ -44,19 +44,32 @@ async function run() {
         })
 
         // get data from email
-      app.get('/services/:email',async(req, res)=>{
-        const email = req.params.email
-        const query = {'serviceProvider.email':email}
-        const result = await servicesColection.find(query).toArray()
-        res.send(result)
-      })
+        app.get('/services/:email', async (req, res) => {
+            const email = req.params.email
+            const query = { 'serviceProvider.email': email }
+            const result = await servicesColection.find(query).toArray()
+            res.send(result)
+        })
         // delete data by id
-      app.delete('/service/:id',async(req, res)=>{
-        const id = req.params.id
-        const query = {_id: new ObjectId(id)}
-        const result = await servicesColection.deleteOne(query)
-        res.send(result)
-      })
+        app.delete('/service/:id', async (req, res) => {
+            const id = req.params.id
+            const query = { _id: new ObjectId(id) }
+            const result = await servicesColection.deleteOne(query)
+            res.send(result)
+        })
+        // update data by id
+        app.put('/service/:id', async (req, res) => {
+            const serviceData = req.body
+            const query = { _id: new ObjectId(req.params.id) }
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: {
+                  ...serviceData
+                },
+              };
+              const result = await servicesColection.updateOne(query, updateDoc, options);
+            res.send(result)
+        })
         // post service
         app.post('/service', async (req, res) => {
             const serviceData = req.body;
